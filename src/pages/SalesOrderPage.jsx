@@ -208,7 +208,7 @@ function SalesOrderPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">Sales Orders</h1>
-          <p className="text-slate-500 text-sm">Monitor seluruh omset penjualan, keuntungan bersih, dan kelola invoice kasir.</p>
+          <p className="text-slate-500 text-sm">Monitor total sales revenue and net profit, and manage cashier invoices..</p>
         </div>
         <button
           onClick={() => navigate('/admin/sales-order/create')}
@@ -228,7 +228,7 @@ function SalesOrderPage() {
             <Search className="absolute left-3 top-3.5 text-slate-400" size={18} />
             <input
               type="text"
-              placeholder="Cari berdasarkan nomor invoice..."
+              placeholder="Search by invoice number..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:outline-none transition-all font-semibold"
@@ -289,7 +289,7 @@ function SalesOrderPage() {
                   <td colSpan="6" className="p-12 text-center text-slate-400">
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 size={20} className="animate-spin text-blue-600" />
-                      <span>Memuat riwayat transaksi...</span>
+                      <span>Loading transaction history...</span>
                     </div>
                   </td>
                 </tr>
@@ -345,7 +345,7 @@ function SalesOrderPage() {
               ) : (
                 <tr>
                   <td colSpan="6" className="p-8 text-center text-slate-400 font-semibold">
-                    Tidak ada riwayat transaksi penjualan ditemukan.
+                    No sales transaction history found.
                   </td>
                 </tr>
               )}
@@ -356,10 +356,10 @@ function SalesOrderPage() {
         {/* PAGINATION */}
         {!loading && transactions.length > 0 && (
           <div className="p-4 px-6 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm font-semibold text-slate-600">
-            <div>Menampilkan {transactions.length} dari {paginationInfo.totalData} Invoice</div>
+            <div>Showing {transactions.length} dari {paginationInfo.totalData} Invoice</div>
             <div className="flex items-center gap-2">
               <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="p-2 border border-slate-200 bg-white rounded-xl hover:bg-slate-50 disabled:opacity-50 cursor-pointer"><ChevronLeft size={16} /></button>
-              <div className="text-xs text-slate-500 px-2">Halaman <span className="font-bold text-slate-800">{currentPage}</span> dari {paginationInfo.totalPages}</div>
+              <div className="text-xs text-slate-500 px-2">Page <span className="font-bold text-slate-800">{currentPage}</span> from {paginationInfo.totalPages}</div>
               <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, paginationInfo.totalPages))} disabled={currentPage === paginationInfo.totalPages} className="p-2 border border-slate-200 bg-white rounded-xl hover:bg-slate-50 disabled:opacity-50 cursor-pointer"><ChevronRight size={16} /></button>
             </div>
           </div>
@@ -371,14 +371,14 @@ function SalesOrderPage() {
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white rounded-3xl p-8 max-w-xl w-full shadow-2xl border border-slate-100 max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
-              <h3 className="text-lg font-extrabold text-slate-800">Detail Transaksi Penjualan</h3>
+              <h3 className="text-lg font-extrabold text-slate-800">Sales Transaction Details</h3>
               <button onClick={() => { setShowDetailModal(false); setSelectedTx(null); }} className="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
             </div>
 
             {loadingDetail || !selectedTx ? (
               <div className="py-12 text-center text-slate-400 flex items-center justify-center gap-2">
                 <Loader2 size={18} className="animate-spin text-blue-600" />
-                <span>Memuat rincian transaksi...</span>
+                <span>Loading transaction details...</span>
               </div>
             ) : (
               <div className="space-y-6">
@@ -394,19 +394,19 @@ function SalesOrderPage() {
                   {/* MODIFIKASI 2: Mengubah format tanggal pop-up modal detail ke format Indonesia strip (-) & bold */}
                   <div className="col-span-2 border-t border-slate-200/60 pt-2 flex items-center gap-1.5">
                     <Calendar size={14} className="text-slate-400" />
-                    <span>Selesai pada: <strong className="font-bold text-slate-800">{formatDateId(selectedTx.transaction_date)}</strong></span>
+                    <span>Completed on: <strong className="font-bold text-slate-800">{formatDateId(selectedTx.transaction_date)}</strong></span>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Daftar Item Dibeli</h4>
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">List of Purchased Items</h4>
                   <div className="border border-slate-200/80 rounded-2xl overflow-hidden">
                     <table className="w-full text-left text-xs font-semibold">
                       <thead className="bg-slate-50 border-b border-slate-200/80 text-slate-400">
                         <tr>
                           <th className="p-3 pl-4">Product Snapshot</th>
                           <th className="p-3 text-center">Qty</th>
-                          <th className="p-3">Harga</th>
+                          <th className="p-3">Product</th>
                           <th className="p-3 text-right pr-4">Subtotal</th>
                         </tr>
                       </thead>
@@ -426,15 +426,15 @@ function SalesOrderPage() {
 
                 <div className="border-t border-slate-100 pt-4 space-y-2 text-sm font-semibold">
                   <div className="flex justify-between text-slate-500">
-                    <span>Total Beban Pokok (HPP)</span>
+                    <span>Total Tree Load (HPP)</span>
                     <span>Rp {selectedTx.total_hpp.toLocaleString('id-ID')}</span>
                   </div>
                   <div className="flex justify-between text-slate-800 text-base font-bold">
-                    <span>Total Penerimaan (Omset)</span>
+                    <span>Total Revenue (Omzet)</span>
                     <span>Rp {selectedTx.total_omset.toLocaleString('id-ID')}</span>
                   </div>
                   <div className="flex justify-between text-emerald-600 bg-emerald-50 p-3 rounded-xl font-bold mt-2">
-                    <span>Keuntungan Bersih (Net Profit)</span>
+                    <span>Net Profit (Net Profit)</span>
                     <span>+ Rp {selectedTx.total_net_profit.toLocaleString('id-ID')}</span>
                   </div>
                 </div>
@@ -444,14 +444,14 @@ function SalesOrderPage() {
                     onClick={() => { setShowDetailModal(false); setSelectedTx(null); }}
                     className="flex-1 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition"
                   >
-                    Tutup
+                    Close
                   </button>
                   <button
                     onClick={() => handlePrintReceipt(selectedTx)}
                     className="flex-1 py-3 text-sm font-bold text-white bg-slate-800 rounded-xl hover:bg-slate-900 flex items-center justify-center gap-2 transition"
                   >
                     <Printer size={16} />
-                    <span>Print Struk</span>
+                    <span>Print Struct</span>
                   </button>
                 </div>
               </div>

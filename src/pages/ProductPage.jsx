@@ -200,7 +200,7 @@ function ProductPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
                 <div>
                     <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">Master Product</h1>
-                    <p className="text-slate-500 text-sm">Kelola daftar item barang, harga, dan ketersediaan stok kasir POS.</p>
+                    <p className="text-slate-500 text-sm">Manage the list of items, prices, and stock availability for the POS cashier system.</p>
                 </div>
                 <button
                     onClick={() => setShowAddModal(true)}
@@ -218,7 +218,7 @@ function ProductPage() {
                         <Search className="absolute left-3 top-3.5 text-slate-400" size={18} />
                         <input
                             type="text"
-                            placeholder="Cari nama produk..."
+                            placeholder="Search product name..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:outline-none transition-all"
@@ -247,7 +247,7 @@ function ProductPage() {
                                 <th className="p-4 pl-6 font-semibold">Product Name</th>
                                 <th className="p-4 font-semibold">Category</th>
                                 <th className="p-4 font-semibold">Price</th>
-                                <th className="p-4 font-semibold text-center">Stock Management</th>
+                                <th className="p-4 font-semibold text-center">Is Need Stock</th>
                                 <th className="p-4 font-semibold text-center">Stock</th>
                                 <th className="p-4 font-semibold text-center">Status</th>
                                 <th className="p-4 pr-6 text-right font-semibold">Actions</th>
@@ -259,7 +259,7 @@ function ProductPage() {
                                     <td colSpan="7" className="p-12 text-center text-slate-400">
                                         <div className="flex items-center justify-center gap-2">
                                             <Loader2 size={20} className="animate-spin text-blue-600" />
-                                            <span>Menarik data produk...</span>
+                                            <span>Fetch data...</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -331,7 +331,7 @@ function ProductPage() {
                             ) : (
                                 <tr>
                                     <td colSpan="7" className="p-8 text-center text-slate-400 font-semibold">
-                                        Tidak ada data produk ditemukan.
+                                        Product not found.
                                     </td>
                                 </tr>
                             )}
@@ -343,7 +343,7 @@ function ProductPage() {
                 {!loading && products.length > 0 && (
                     <div className="p-4 px-6 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm font-semibold text-slate-600">
                         <div>
-                            Menampilkan <span className="text-slate-800">{products.length}</span> dari <span className="text-slate-800">{paginationInfo.totalData}</span> produk
+                            Showing <span className="text-slate-800">{products.length}</span> from <span className="text-slate-800">{paginationInfo.totalData}</span> product
                         </div>
                         <div className="flex items-center gap-2">
                             <button
@@ -354,7 +354,7 @@ function ProductPage() {
                                 <ChevronLeft size={16} />
                             </button>
                             <div className="text-xs text-slate-500 px-2">
-                                Halaman <span className="font-bold text-slate-800">{currentPage}</span> dari <span className="font-bold text-slate-800">{paginationInfo.totalPages}</span>
+                                Page <span className="font-bold text-slate-800">{currentPage}</span> from <span className="font-bold text-slate-800">{paginationInfo.totalPages}</span>
                             </div>
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, paginationInfo.totalPages))}
@@ -373,25 +373,25 @@ function ProductPage() {
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50">
                     <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
                         <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight">Add New Product</h3>
-                        <p className="text-slate-500 text-sm mb-6">Tambahkan produk dagang baru ke etalase kasir.</p>
+                        <p className="text-slate-500 text-sm mb-6">Add a new product to the storefront..</p>
 
                         <form onSubmit={handleAddProduct} className="space-y-4">
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Product Name</label>
-                                <input type="text" placeholder="Nama Produk" value={newName} onChange={(e) => setNewName(e.target.value)} className="rounded-xl border border-slate-300 p-3 text-sm focus:border-blue-500 focus:outline-none" required />
+                                <input type="text" placeholder="Product name" value={newName} onChange={(e) => setNewName(e.target.value)} className="rounded-xl border border-slate-300 p-3 text-sm focus:border-blue-500 focus:outline-none" required />
                             </div>
 
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Category</label>
                                 <select value={newCategoryId} onChange={(e) => setNewCategoryId(e.target.value)} className="rounded-xl border border-slate-300 p-3 text-sm bg-white focus:border-blue-500 focus:outline-none cursor-pointer" required>
-                                    <option value="">-- Pilih Kategori --</option>
+                                    <option value="">-- Choose Category --</option>
                                     {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                 </select>
                             </div>
 
                             {/* TOGGLE MANAGEMENT STOK (ADD) */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Manajemen Stok</label>
+                                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Is need stock ?</label>
                                 <div className="flex items-center gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                                     <input
                                         type="checkbox"
@@ -402,9 +402,9 @@ function ProductPage() {
                                     />
                                     <label htmlFor="new_is_need_stock" className="text-xs font-bold text-slate-700 cursor-pointer select-none">
                                         {newIsNeedStock ? (
-                                            <span className="text-blue-600 font-extrabold">ON (Butuh Stok Fisik — Retail/Barang)</span>
+                                            <span className="text-blue-600 font-extrabold">ON (Physical Stock Required — Retail/Goods)</span>
                                         ) : (
-                                            <span className="text-slate-400 font-extrabold">OFF (Tanpa Stok Fisik — Pulsa/Jasa)</span>
+                                            <span className="text-slate-400 font-extrabold">OFF (No Physical Stock — Mobile Credit/Services)</span>
                                         )}
                                     </label>
                                 </div>
@@ -433,12 +433,12 @@ function ProductPage() {
 
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Description</label>
-                                <textarea placeholder="Keterangan opsional..." value={newDesc} onChange={(e) => setNewDesc(e.target.value)} rows="3" className="rounded-xl border border-slate-300 p-3 text-sm focus:border-blue-500 focus:outline-none resize-none" />
+                                <textarea placeholder="Description (optional)..." value={newDesc} onChange={(e) => setNewDesc(e.target.value)} rows="3" className="rounded-xl border border-slate-300 p-3 text-sm focus:border-blue-500 focus:outline-none resize-none" />
                             </div>
 
                             <div className="flex gap-3 pt-2">
-                                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition cursor-pointer">Batal</button>
-                                <button type="submit" className="flex-1 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 transition cursor-pointer">Simpan Produk</button>
+                                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition cursor-pointer">Cancel</button>
+                                <button type="submit" className="flex-1 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 transition cursor-pointer">Save</button>
                             </div>
                         </form>
                     </div>
@@ -450,7 +450,7 @@ function ProductPage() {
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50">
                     <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
                         <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight">Edit Product</h3>
-                        <p className="text-slate-500 text-sm mb-6">Ubah detail rincian produk terpilih.</p>
+                        <p className="text-slate-500 text-sm mb-6">Modify the details of the selected product.</p>
 
                         <form onSubmit={handleEditProduct} className="space-y-4">
                             <div className="flex flex-col gap-1.5">
@@ -467,7 +467,7 @@ function ProductPage() {
 
                             {/* TOGGLE MANAGEMENT STOK (EDIT) */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Manajemen Stok</label>
+                                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Is need stock ?</label>
                                 <div className="flex items-center gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                                     <input
                                         type="checkbox"
@@ -478,9 +478,9 @@ function ProductPage() {
                                     />
                                     <label htmlFor="edit_is_need_stock" className="text-xs font-bold text-slate-700 cursor-pointer select-none">
                                         {editIsNeedStock ? (
-                                            <span className="text-blue-600 font-extrabold">ON (Butuh Stok Fisik — Retail/Barang)</span>
+                                            <span className="text-blue-600 font-extrabold">ON (Physical Stock Required — Retail/Goods)</span>
                                         ) : (
-                                            <span className="text-slate-400 font-extrabold">OFF (Tanpa Stok Fisik — Pulsa/Jasa)</span>
+                                            <span className="text-slate-400 font-extrabold">OFF (No Physical Stock — Mobile Credit/Services)</span>
                                         )}
                                     </label>
                                 </div>
@@ -520,8 +520,8 @@ function ProductPage() {
                             </div>
 
                             <div className="flex gap-3 pt-2">
-                                <button type="button" onClick={() => setShowEditModal(false)} className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition cursor-pointer">Batal</button>
-                                <button type="submit" className="flex-1 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 transition cursor-pointer">Simpan Perubahan</button>
+                                <button type="button" onClick={() => setShowEditModal(false)} className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition cursor-pointer">Cancel</button>
+                                <button type="submit" className="flex-1 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 transition cursor-pointer">Save Changes</button>
                             </div>
                         </form>
                     </div>
@@ -531,13 +531,13 @@ function ProductPage() {
             {showDeleteModal && (
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50">
                     <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
-                        <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight">Hapus Produk?</h3>
+                        <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight">Delete Product?</h3>
                         <p className="text-slate-500 text-sm leading-relaxed mb-6">
-                            Hapus produk <span className="font-bold text-slate-800">"{productToDelete?.name}"</span>? Tindakan ini permanen.
+                            Delete product <span className="font-bold text-slate-800">"{productToDelete?.name}"</span>? This action is permanent.
                         </p>
                         <div className="flex gap-3">
-                            <button onClick={() => setShowDeleteModal(false)} className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition cursor-pointer">Batal</button>
-                            <button onClick={handleDeleteProduct} className="flex-1 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-xl hover:from-red-600 hover:to-red-700 transition cursor-pointer">Ya, Hapus</button>
+                            <button onClick={() => setShowDeleteModal(false)} className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition cursor-pointer">Cancel</button>
+                            <button onClick={handleDeleteProduct} className="flex-1 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-xl hover:from-red-600 hover:to-red-700 transition cursor-pointer">Yes, Delete</button>
                         </div>
                     </div>
                 </div>

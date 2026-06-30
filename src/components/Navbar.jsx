@@ -9,14 +9,14 @@ function Navbar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-        // Bersihkan semua data sesi
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        localStorage.removeItem('name');
-        
-        // Alihkan ke login
-        navigate('/login', { replace: true });
-    };
+    // Bersihkan semua data sesi
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('name');
+
+    // Alihkan ke login
+    navigate('/login', { replace: true });
+  };
 
   return (
     <>
@@ -30,7 +30,7 @@ function Navbar() {
         {/* relative diperlukan agar dropdown absolute memosisikan diri terhadap kontainer ini */}
         <div className="relative">
           {/* Tombol pemicu dropdown (Area Profil) */}
-          <button 
+          <button
             onClick={() => setShowDropdown(!showDropdown)}
             className="flex items-center gap-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 p-1.5 px-3 rounded-2xl transition cursor-pointer"
           >
@@ -40,21 +40,33 @@ function Navbar() {
             <span>Admin Kasir</span>
             <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`} />
           </button>
-          
+
           {/* KOTAK DROPDOWN */}
           {showDropdown && (
             <>
               {/* Overlay transparan di latar belakang agar ketika user klik di luar dropdown, dropdown-nya otomatis menutup */}
               <div className="fixed inset-0 z-10" onClick={() => setShowDropdown(false)}></div>
-              
+
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 z-20 animate-in fade-in slide-in-from-top-2 duration-150">
-                {/* Kamu bisa menambah menu profil lain di sini nanti */}
+                {/* Label Menu */}
                 <div className="px-3 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  Akun Saya
+                  My Account
                 </div>
-                
+
+                {/* TOMBOL PROFILE (TAMBAHAN BARU) */}
+                <button
+                  onClick={() => {
+                    navigate('/admin/profile'); // Sesuaikan dengan path halaman profil Anda
+                    setShowDropdown(false); // Tutup dropdown setelah berpindah halaman
+                  }}
+                  className="w-full flex items-center gap-2 text-sm font-bold text-slate-700 hover:bg-slate-50 p-2.5 px-3 rounded-xl transition cursor-pointer text-left mb-0.5"
+                >
+                  <User size={16} className="text-slate-400" />
+                  <span>Profile Saya</span>
+                </button>
+
                 {/* Tombol Logout di dalam dropdown */}
-                <button 
+                <button
                   onClick={() => {
                     setShowConfirm(true);
                     setShowDropdown(false); // Tutup dropdown saat modal muncul
@@ -75,23 +87,23 @@ function Navbar() {
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
             <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight">
-              Konfirmasi Logout
+              Confirm Logout
             </h3>
             <p className="text-slate-500 text-sm leading-relaxed mb-6">
-              Apakah Anda yakin ingin keluar dari sistem POS ini? Anda harus login kembali untuk mengakses data.
+              Are you sure you want to log out of this POS system? You will need to log in again to access the data.
             </p>
             <div className="flex gap-3">
-              <button 
+              <button
                 onClick={() => setShowConfirm(false)}
                 className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition cursor-pointer"
               >
-                Batal
+                Cancel
               </button>
-              <button 
+              <button
                 onClick={handleLogout}
                 className="flex-1 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-xl hover:from-red-600 hover:to-red-700 shadow-md shadow-red-100 transition cursor-pointer"
               >
-                Ya, Keluar
+                Yes, Logout
               </button>
             </div>
           </div>

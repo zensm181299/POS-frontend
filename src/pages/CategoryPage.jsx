@@ -168,7 +168,7 @@ function CategoryPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">Master Category</h1>
-          <p className="text-slate-500 text-sm">Kelola kategori produk terintegrasi langsung dengan database backend.</p>
+          <p className="text-slate-500 text-sm">Manage your product categories effectively.</p>
         </div>
         <button 
           onClick={() => setShowAddModal(true)}
@@ -186,7 +186,7 @@ function CategoryPage() {
             <Search className="absolute left-3 top-3.5 text-slate-400" size={18} />
             <input 
               type="text"
-              placeholder="Ketik kata kunci pencarian kategori..."
+              placeholder="Type a category search keyword..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:outline-none transition-all"
@@ -225,7 +225,7 @@ function CategoryPage() {
                   <td colSpan="5" className="p-12 text-center text-slate-400 font-medium">
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 size={20} className="animate-spin text-blue-600" />
-                      <span>Menghubungkan ke API Backend...</span>
+                      <span>Connecting to the server...</span>
                     </div>
                   </td>
                 </tr>
@@ -265,7 +265,7 @@ function CategoryPage() {
               ) : (
                 <tr>
                   <td colSpan="5" className="p-8 text-center text-slate-400 font-semibold">
-                    Tidak ada data kategori ditemukan di backend.
+                    No category data found in the backend.
                   </td>
                 </tr>
               )}
@@ -277,7 +277,7 @@ function CategoryPage() {
         {!loading && categories.length > 0 && (
           <div className="p-4 px-6 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm font-semibold text-slate-600">
             <div>
-              Menampilkan <span className="text-slate-800">{categories.length}</span> dari <span className="text-slate-800">{paginationInfo.totalData}</span> data kategori
+              Show <span className="text-slate-800">{categories.length}</span> from <span className="text-slate-800">{paginationInfo.totalData}</span> category data
             </div>
             
             <div className="flex items-center gap-2">
@@ -290,7 +290,7 @@ function CategoryPage() {
               </button>
               
               <div className="text-xs text-slate-500 px-2">
-                Halaman <span className="font-bold text-slate-800">{currentPage}</span> dari <span className="font-bold text-slate-800">{paginationInfo.totalPages}</span>
+                Page <span className="font-bold text-slate-800">{currentPage}</span> from <span className="font-bold text-slate-800">{paginationInfo.totalPages}</span>
               </div>
 
               <button
@@ -310,14 +310,14 @@ function CategoryPage() {
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
             <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight">Add New Category</h3>
-            <p className="text-slate-500 text-sm mb-6 leading-relaxed">Kirim kategori baru langsung ke server database POS.</p>
+            <p className="text-slate-500 text-sm mb-6 leading-relaxed">Create a new category for your products.</p>
             
             <form onSubmit={handleAddCategory} className="space-y-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-slate-600 uppercase tracking-wider ml-1">Category Name</label>
                 <input 
                   type="text"
-                  placeholder="Contoh: phone, test, dsb."
+                  placeholder="Example: phone, test, etc."
                   value={newCatName}
                   onChange={(e) => setNewCatName(e.target.value)}
                   className="rounded-xl border border-slate-300 p-3 text-sm text-slate-900 shadow-inner focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
@@ -328,7 +328,7 @@ function CategoryPage() {
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-slate-600 uppercase tracking-wider ml-1">Description</label>
                 <textarea 
-                  placeholder="Keterangan singkat..."
+                  placeholder="Short description..."
                   value={newCatDesc}
                   onChange={(e) => setNewCatDesc(e.target.value)}
                   rows="3"
@@ -342,10 +342,10 @@ function CategoryPage() {
                   onClick={() => { setShowAddModal(false); setNewCatName(''); setNewCatDesc(''); }}
                   className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition cursor-pointer"
                 >
-                  Batal
+                  Cancel
                 </button>
                 <button type="submit" className="flex-1 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 shadow-md shadow-blue-100 transition cursor-pointer">
-                  Simpan ke Server
+                  Save
                 </button>
               </div>
             </form>
@@ -358,14 +358,14 @@ function CategoryPage() {
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
             <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight">Edit Category</h3>
-            <p className="text-slate-500 text-sm mb-6 leading-relaxed">Ubah informasi kategori produk yang tersimpan di server.</p>
+            <p className="text-slate-500 text-sm mb-6 leading-relaxed">Change category information.</p>
             
             <form onSubmit={handleEditCategory} className="space-y-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-slate-600 uppercase tracking-wider ml-1">Category Name</label>
                 <input 
                   type="text"
-                  placeholder="Nama kategori..."
+                  placeholder="Category name..."
                   value={editCatName}
                   onChange={(e) => setEditCatName(e.target.value)}
                   className="rounded-xl border border-slate-300 p-3 text-sm text-slate-900 shadow-inner focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
@@ -376,7 +376,7 @@ function CategoryPage() {
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-slate-600 uppercase tracking-wider ml-1">Description</label>
                 <textarea 
-                  placeholder="Keterangan singkat..."
+                  placeholder="Short description..."
                   value={editCatDesc}
                   onChange={(e) => setEditCatDesc(e.target.value)}
                   rows="3"
@@ -402,10 +402,10 @@ function CategoryPage() {
                   onClick={() => { setShowEditModal(false); setSelectedCategory(null); }}
                   className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition cursor-pointer"
                 >
-                  Batal
+                  Cancel
                 </button>
                 <button type="submit" className="flex-1 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 shadow-md shadow-blue-100 transition cursor-pointer">
-                  Simpan Perubahan
+                  Save Changes
                 </button>
               </div>
             </form>
@@ -417,22 +417,22 @@ function CategoryPage() {
       {showDeleteModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
-            <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight">Hapus Kategori?</h3>
+            <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight">Delete Category?</h3>
             <p className="text-slate-500 text-sm leading-relaxed mb-6">
-              Apakah Anda yakin ingin menghapus kategori <span className="font-bold text-slate-800">"{categoryToDelete?.name}"</span>? Tindakan ini tidak dapat dibatalkan.
+              Delete category <span className="font-bold text-slate-800">"{categoryToDelete?.name}"</span>? This action is permanent.
             </p>
             <div className="flex gap-3">
               <button 
                 onClick={() => { setShowDeleteModal(false); setCategoryToDelete(null); }}
                 className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition cursor-pointer"
               >
-                Batal
+                Cancel
               </button>
               <button 
                 onClick={handleDeleteCategory}
                 className="flex-1 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-xl hover:from-red-600 hover:to-red-700 shadow-md shadow-red-100 transition cursor-pointer"
               >
-                Ya, Hapus
+                Yes, Delete
               </button>
             </div>
           </div>

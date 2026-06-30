@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+/* Konfigurasi tema khusus Tailwind v4 ditulis di sini */
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  @apply font-sans antialiased text-slate-800 bg-slate-100;
+}

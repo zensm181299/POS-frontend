@@ -165,8 +165,8 @@ function CreateSalesOrderPage() {
                         <ArrowLeft size={16} />
                     </button>
                     <div>
-                        <h1 className="text-xl font-extrabold text-slate-800">Menu Kasir POS</h1>
-                        <p className="text-slate-400 text-xs">Pilih item produk untuk dimasukkan ke keranjang kasir.</p>
+                        <h1 className="text-xl font-extrabold text-slate-800">Add sales transaction</h1>
+                        <p className="text-slate-400 text-xs">Select product items to add to the checkout cart.</p>
                     </div>
                 </div>
 
@@ -174,7 +174,7 @@ function CreateSalesOrderPage() {
                 <form onSubmit={handleSearchProduct} className="mb-4 relative">
                     <input
                         type="text"
-                        placeholder="Ketik nama produk..."
+                        placeholder="Enter the product name..."
                         value={searchProd}
                         onChange={(e) => setSearchProd(e.target.value)}
                         className="w-full pl-4 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500"
@@ -187,7 +187,7 @@ function CreateSalesOrderPage() {
                 {/* Grid List Produk */}
                 <div className="flex-1 overflow-y-auto pr-1">
                     {loading ? (
-                        <div className="h-full flex items-center justify-center gap-2 text-slate-400"><Loader2 size={20} className="animate-spin text-blue-600" /> Memuat menu...</div>
+                        <div className="h-full flex items-center justify-center gap-2 text-slate-400"><Loader2 size={20} className="animate-spin text-blue-600" /> Load product...</div>
                     ) : products.length > 0 ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                             {products.map(prod => (
@@ -206,7 +206,7 @@ function CreateSalesOrderPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="h-full flex items-center justify-center text-slate-400 font-semibold">Tidak ada produk aktif.</div>
+                        <div className="h-full flex items-center justify-center text-slate-400 font-semibold">No active products.</div>
                     )}
                 </div>
             </div>
@@ -245,7 +245,7 @@ function CreateSalesOrderPage() {
                                 {/* Form Input Dinamis Harga Modal & Harga Jual */}
                                 <div className="grid grid-cols-2 gap-2 border-t border-slate-800 pt-2.5">
                                     <div>
-                                        <label className="text-[10px] font-bold text-slate-400 block mb-1 uppercase tracking-wider">Harga Modal (HPP)</label>
+                                        <label className="text-[10px] font-bold text-slate-400 block mb-1 uppercase tracking-wider">Capital Price (HPP)</label>
                                         <input
                                             type="number"
                                             value={item.actual_cost_price}
@@ -254,7 +254,7 @@ function CreateSalesOrderPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-bold text-slate-400 block mb-1 uppercase tracking-wider">Harga Jual (Riil)</label>
+                                        <label className="text-[10px] font-bold text-slate-400 block mb-1 uppercase tracking-wider">Sell Price (Riil)</label>
                                         <input
                                             type="number"
                                             value={item.actual_selling_price}
@@ -267,7 +267,7 @@ function CreateSalesOrderPage() {
                             </div>
                         ))
                     ) : (
-                        <div className="h-full flex flex-col items-center justify-center text-slate-500 text-sm font-semibold py-12">Keranjang masih kosong</div>
+                        <div className="h-full flex flex-col items-center justify-center text-slate-500 text-sm font-semibold py-12">Cart is empty</div>
                     )}
                 </div>
 
@@ -276,7 +276,7 @@ function CreateSalesOrderPage() {
 
                     {/* INPUT TRANSACTION DATE */}
                     <div>
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Tanggal Transaksi</label>
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Transaction Date</label>
                         <input
                             type="date"
                             value={transactionDate}
@@ -288,7 +288,7 @@ function CreateSalesOrderPage() {
 
                     {/* METODE PEMBAYARAN */}
                     <div>
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Metode Pembayaran</label>
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Payment Method</label>
                         <div className="grid grid-cols-2 gap-2">
                             {['CASH', 'TRANSFER'].map(method => (
                                 <button
@@ -311,14 +311,14 @@ function CreateSalesOrderPage() {
                     <div>
                         <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2 flex items-center gap-1">
                             <Wallet size={12} className="text-blue-400" />
-                            Pilih Aliran Dana / Wallet <span className="text-[10px] text-slate-500 font-normal lowercase">(opsional)</span>
+                            Select Fund Flow / Wallet <span className="text-[10px] text-slate-500 font-normal lowercase">(opsional)</span>
                         </label>
                         <select
                             value={selectedWalletId}
                             onChange={(e) => setSelectedWalletId(e.target.value)}
                             className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-200 focus:outline-none focus:border-blue-500 cursor-pointer"
                         >
-                            <option value="">-- Tanpa Menghubungkan Wallet (Opsional) --</option>
+                            <option value="">-- Without Connecting a Wallet (Opsional) --</option>
                             {wallets.map(w => (
                                 <option key={w.id} value={w.id}>
                                     {w.name} (Sisa Saldo: Rp {Number(w.balance).toLocaleString('id-ID')})
@@ -328,7 +328,7 @@ function CreateSalesOrderPage() {
                     </div>
 
                     <div className="flex justify-between items-center bg-slate-800 p-4 rounded-2xl font-bold">
-                        <span className="text-slate-400 text-xs">TOTAL BELANJA</span>
+                        <span className="text-slate-400 text-xs">TOTAL SPENDING</span>
                         <span className="text-lg text-emerald-400">Rp {totalOmset.toLocaleString('id-ID')}</span>
                     </div>
 
@@ -340,10 +340,10 @@ function CreateSalesOrderPage() {
                         {submitting ? (
                             <>
                                 <Loader2 size={16} className="animate-spin" />
-                                <span>Memproses Transaksi...</span>
+                                <span>Processing Transactions...</span>
                             </>
                         ) : (
-                            <span>Proses Bayar & Simpan</span>
+                            <span>Pay & Save Process</span>
                         )}
                     </button>
                 </div>
