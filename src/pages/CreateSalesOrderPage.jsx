@@ -40,7 +40,7 @@ function CreateSalesOrderPage() {
     // Fetch Daftar Wallet aktif untuk Opsi Pembayaran Kasir
     const fetchWalletsForCashier = useCallback(async () => {
         try {
-            const response = await api.get('/wallet');
+            const response = await api.get('/wallets');
             const resultData = response.data.data || response.data;
             setWallets(Array.isArray(resultData) ? resultData : []);
         } catch (err) {

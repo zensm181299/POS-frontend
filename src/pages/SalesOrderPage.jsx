@@ -1,15 +1,41 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosInstance';
-import { Plus, Search, RotateCcw, FileText, Printer, ChevronLeft, ChevronRight, Loader2, Eye, Calendar, Trash2 } from 'lucide-react';
+import { Plus, Search, RotateCcw, FileText, Printer, ChevronLeft, ChevronRight, Loader2, Eye, Calendar, Trash2, CheckCircle, Clock } from 'lucide-react';
 
 function SalesOrderPage() {
   const navigate = useNavigate();
+
+  // Helper untuk mendapatkan tanggal awal & akhir bulan ini secara lokal (format YYYY-MM-DD)
+  const getInitialDates = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth(); // 0-11
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    const formatDate = (date) => {
+      const d = String(date.getDate()).padStart(2, '0');
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      return `${date.getFullYear()}-${m}-${d}`;
+    };
+
+    return {
+      start: formatDate(firstDay),
+      end: formatDate(lastDay)
+    };
+  };
+
+  const initialDates = getInitialDates();
 
   // State Utama
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  // BARU: State Manajemen Tab ('done' atau 'pending')
+  const [activeTab, setActiveTab] = useState('done');
 
   // Pencarian & Pagination
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,21 +52,24 @@ function SalesOrderPage() {
   const [txToDelete, setTxToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  // Nilai Awal State Tanggal langsung diset ke Awal dan Akhir Bulan berjalan
+  const [startDate, setStartDate] = useState(initialDates.start);
+  const [endDate, setEndDate] = useState(initialDates.end);
 
   // Fetch List Transaksi (GET /api/sales-order)
-  const fetchTransactions = useCallback(async (page = 1, search = '', start = '', end = '') => {
+  // DIUBAH: Menambahkan parameter `status` yang diambil dari activeTab
+  const fetchTransactions = useCallback(async (page = 1, search = '', start = '', end = '', status = 'done') => {
     setLoading(true);
     setError('');
     try {
-      const params = { page, perPage: 10, search };
+      // Menyertakan status ke parameter request backend (sesuaikan query param status jika diperlukan backend Anda)
+      const params = { page, perPage: 10, search, status };
 
-      // Jika user memilih rentang tanggal, gabungkan menjadi format "YYYY-MM-DD,YYYY-MM-DD"
+      // Jika user/sistem melampirkan rentang tanggal, kirim ke params backend
       if (start && end) {
         params.transaction_date = `${start},${end}`;
       } else if (start) {
-        params.transaction_date = `${start},${start}`; // jika hanya memilih start date saja
+        params.transaction_date = `${start},${start}`;
       }
 
       const response = await api.get('/sales-order', { params });
@@ -56,9 +85,16 @@ function SalesOrderPage() {
     }
   }, []);
 
+  // DIUBAH: Tambahkan `activeTab` ke dependency array agar memicu fetch ulang secara bersih saat tab berpindah
   useEffect(() => {
-    fetchTransactions(currentPage, searchQuery);
-  }, [currentPage, fetchTransactions]);
+    fetchTransactions(currentPage, searchQuery, startDate, endDate, activeTab);
+  }, [currentPage, activeTab, fetchTransactions]);
+
+  // Handler Pindah Tab
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+    setCurrentPage(1); // Reset ke halaman pertama setiap kali ganti status tab
+  };
 
   // Fetch Detail Transaksi (GET /api/sales-order/:id)
   const handleOpenDetail = async (id) => {
@@ -93,12 +129,11 @@ function SalesOrderPage() {
       setShowDeleteModal(false);
       setTxToDelete(null);
 
-      // Koreksi halaman jika data terakhir di page tersebut habis setelah dihapus
       const isCurrentPageEmpty = transactions.length === 1 && currentPage > 1;
       const targetPage = isCurrentPageEmpty ? currentPage - 1 : currentPage;
 
       setCurrentPage(targetPage);
-      fetchTransactions(targetPage, searchQuery);
+      fetchTransactions(targetPage, searchQuery, startDate, endDate, activeTab);
     } catch (err) {
       console.error("Error deleting transaction:", err);
       alert('Gagal menghapus data transaksi.');
@@ -173,28 +208,25 @@ function SalesOrderPage() {
   const handleSearch = (e) => {
     e.preventDefault();
     setCurrentPage(1);
-    // Mengirimkan search query beserta parameter tanggal saat submit form
-    fetchTransactions(1, searchQuery, startDate, endDate);
+    fetchTransactions(1, searchQuery, startDate, endDate, activeTab);
   };
 
   const handleResetSearch = () => {
+    const dates = getInitialDates();
     setSearchQuery('');
-    setStartDate('');
-    setEndDate('');
+    setStartDate(dates.start);
+    setEndDate(dates.end);
     setCurrentPage(1);
-    // Fetch ulang data bersih tanpa filter apapun
-    fetchTransactions(1, '', '', '');
+    fetchTransactions(1, '', dates.start, dates.end, activeTab);
   };
 
   const formatDateId = (dateString) => {
     if (!dateString) return '-';
     const d = new Date(dateString);
-    // Mengambil komponen tanggal secara lokal
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const year = d.getFullYear();
 
-    // Mengambil komponen waktu
     const hours = String(d.getHours()).padStart(2, '0');
     const minutes = String(d.getMinutes()).padStart(2, '0');
     const seconds = String(d.getSeconds()).padStart(2, '0');
@@ -208,7 +240,7 @@ function SalesOrderPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">Sales Orders</h1>
-          <p className="text-slate-500 text-sm">Monitor total sales revenue and net profit, and manage cashier invoices..</p>
+          <p className="text-slate-500 text-sm">Monitor total sales revenue and net profit, and manage cashier invoices.</p>
         </div>
         <button
           onClick={() => navigate('/admin/sales-order/create')}
@@ -216,6 +248,34 @@ function SalesOrderPage() {
         >
           <Plus size={18} />
           <span>Add New Transaction</span>
+        </button>
+      </div>
+
+      {/* BARU: TAB SYSTEM NAVIGATION */}
+      <div className="flex border-b border-slate-200 gap-2">
+        <button
+          type="button"
+          onClick={() => handleTabChange('done')}
+          className={`flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all relative top-[1px] cursor-pointer ${
+            activeTab === 'done'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-slate-400 hover:text-slate-600 border-b-2 border-transparent'
+          }`}
+        >
+          <CheckCircle size={16} />
+          <span>Order Done</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => handleTabChange('pending')}
+          className={`flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all relative top-[1px] cursor-pointer ${
+            activeTab === 'pending'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-slate-400 hover:text-slate-600 border-b-2 border-transparent'
+          }`}
+        >
+          <Clock size={16} />
+          <span>Order Pending</span>
         </button>
       </div>
 
@@ -266,8 +326,6 @@ function SalesOrderPage() {
         </form>
       </div>
 
-      {/* Tambahkan fungsi helper ini di atas atau di luar komponen utama Anda jika memungkinkan */}
-
       {/* TABLE */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         {error && <div className="p-6 bg-red-50 text-red-600 font-semibold text-sm border-b border-red-100">{error}</div>}
@@ -300,7 +358,6 @@ function SalesOrderPage() {
                       <FileText size={16} className="text-slate-400" />
                       {tx.invoice_number}
                     </td>
-                    {/* MODIFIKASI 1: Mengubah format tanggal tabel ke format Indonesia strip (-) & bold */}
                     <td className="p-4 font-bold text-slate-800">
                       {formatDateId(tx.transaction_date)}
                     </td>
@@ -345,7 +402,7 @@ function SalesOrderPage() {
               ) : (
                 <tr>
                   <td colSpan="6" className="p-8 text-center text-slate-400 font-semibold">
-                    No sales transaction history found.
+                    No sales transaction history found for this category.
                   </td>
                 </tr>
               )}
@@ -391,7 +448,6 @@ function SalesOrderPage() {
                     <p className="text-slate-400">PAYMENT METHOD</p>
                     <p className="text-base font-bold text-blue-600 mt-0.5">{selectedTx.payment_method}</p>
                   </div>
-                  {/* MODIFIKASI 2: Mengubah format tanggal pop-up modal detail ke format Indonesia strip (-) & bold */}
                   <div className="col-span-2 border-t border-slate-200/60 pt-2 flex items-center gap-1.5">
                     <Calendar size={14} className="text-slate-400" />
                     <span>Completed on: <strong className="font-bold text-slate-800">{formatDateId(selectedTx.transaction_date)}</strong></span>

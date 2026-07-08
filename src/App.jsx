@@ -7,6 +7,8 @@ import ProductPage from './pages/ProductPage';
 import SalesOrderPage from './pages/SalesOrderPage';
 import CreateSalesOrderPage from './pages/CreateSalesOrderPage';
 import WalletPage from './pages/WalletPage';
+import ExpenseListPage from './pages/ExpenseListPage';
+import ExpenseCreatePage from './pages/ExpenseCreatePage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -27,6 +29,9 @@ function App() {
 
             <Route path="sales-order" element={<SalesOrderPage />} />
             <Route path="sales-order/create" element={<CreateSalesOrderPage />} />
+
+            <Route path='expense' element={<ExpenseListPage />} />
+            <Route path='expense/create' element={<ExpenseCreatePage />} />
 
             <Route path="wallet" element={<WalletPage />} />
           </Route>

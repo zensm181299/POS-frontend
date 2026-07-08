@@ -67,7 +67,7 @@ function Sidebar() {
           {openMenus.transaction && (
             <div className="ml-6 mt-1 space-y-1 border-l-2 border-slate-100 pl-4 text-slate-500">
               <Link to="/admin/sales-order" className={`block p-2 rounded-lg transition-all ${isActive('/admin/sales-order') ? 'text-blue-600 font-bold' : 'hover:text-slate-800'}`}>Sales Order</Link>
-              <Link to="/admin/purchase-order" className={`block p-2 rounded-lg transition-all ${isActive('/admin/purchase-order') ? 'text-blue-600 font-bold' : 'hover:text-slate-800'}`}>Expense Transactions</Link>
+              <Link to="/admin/expense" className={`block p-2 rounded-lg transition-all ${isActive('/admin/expense') ? 'text-blue-600 font-bold' : 'hover:text-slate-800'}`}>Expense Transactions</Link>
             </div>
           )}
         </div>

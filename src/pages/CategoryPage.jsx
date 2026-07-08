@@ -25,7 +25,7 @@ function CategoryPage() {
 
   // 4. State Kontrol Pop-up Modal EDIT
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null); // Menyimpan data kategori yang dipilih untuk diedit
+  const [selectedCategory, setSelectedCategory] = useState(null); 
   const [editCatName, setEditCatName] = useState('');
   const [editCatDesc, setEditCatDesc] = useState('');
   const [editCatStatus, setEditCatStatus] = useState('active');
@@ -34,7 +34,7 @@ function CategoryPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
-  // 6. Fungsi Mengambil Data dari Backend (GET /api/categories)
+  // 6. Fungsi Utama Mengambil Data dari Backend (GET /api/categories)
   const fetchCategories = async (page = 1, search = '') => {
     setLoading(true);
     setError('');
@@ -59,7 +59,7 @@ function CategoryPage() {
     }
   };
 
-  // Trigger ulang fetchCategories setiap ada perubahan halaman (currentPage)
+  // Tunggal: Trigger fetch hanya bergantung pada perubahan currentPage
   useEffect(() => {
     fetchCategories(currentPage, searchQuery);
   }, [currentPage]);
@@ -67,15 +67,25 @@ function CategoryPage() {
   // Handler Kirim Form Pencarian
   const handleSearch = (e) => {
     e.preventDefault();
-    setCurrentPage(1); 
-    fetchCategories(1, searchQuery);
+    if (currentPage === 1) {
+      // Jika sudah di page 1, ubah state tidak memicu useEffect, panggil manual
+      fetchCategories(1, searchQuery);
+    } else {
+      // Jika di page > 1, ubah ke 1 otomatis memicu useEffect
+      setCurrentPage(1); 
+    }
   };
 
   // Handler Bersihkan/Reset Pencarian
   const handleResetSearch = () => {
     setSearchQuery('');
-    setCurrentPage(1);
-    fetchCategories(1, '');
+    if (currentPage === 1) {
+      // Jika sudah di page 1, ubah state tidak memicu useEffect, panggil manual dengan string kosong
+      fetchCategories(1, '');
+    } else {
+      // Jika di page > 1, ubah ke 1 otomatis memicu useEffect dengan searchQuery terbaru (kosong)
+      setCurrentPage(1);
+    }
   };
 
   // Handler Submit Menyimpan Kategori Baru (POST /api/categories)
@@ -94,8 +104,12 @@ function CategoryPage() {
       setNewCatDesc('');
       setShowAddModal(false);
 
-      setCurrentPage(1);
-      fetchCategories(1, searchQuery);
+      // Kembalikan ke halaman 1 setelah tambah data
+      if (currentPage === 1) {
+        fetchCategories(1, searchQuery);
+      } else {
+        setCurrentPage(1);
+      }
     } catch (err) {
       console.error("Error saving new category:", err);
       alert('Gagal menyimpan kategori baru.');
@@ -126,7 +140,7 @@ function CategoryPage() {
       setShowEditModal(false);
       setSelectedCategory(null);
       
-      // Refresh halaman aktif saat ini
+      // Refresh halaman aktif saat ini secara langsung karena urutan page tidak berubah
       fetchCategories(currentPage, searchQuery);
     } catch (err) {
       console.error("Error updating category:", err);
@@ -150,12 +164,15 @@ function CategoryPage() {
       setShowDeleteModal(false);
       setCategoryToDelete(null);
 
-      // Jika data di halaman terakhir habis setelah dihapus, mundur 1 halaman
+      // Logika penentuan target page pasca-delete
       const isCurrentPageEmpty = categories.length === 1 && currentPage > 1;
       const targetPage = isCurrentPageEmpty ? currentPage - 1 : currentPage;
       
-      setCurrentPage(targetPage);
-      fetchCategories(targetPage, searchQuery);
+      if (currentPage === targetPage) {
+        fetchCategories(targetPage, searchQuery);
+      } else {
+        setCurrentPage(targetPage); // Memicu useEffect secara otomatis
+      }
     } catch (err) {
       console.error("Error deleting category:", err);
       alert('Gagal menghapus kategori.');
@@ -212,7 +229,6 @@ function CategoryPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50 border-b border-slate-100 text-slate-400 font-bold">
               <tr>
-                {/* <th className="p-4 pl-6 font-semibold">UUID ID</th> */}
                 <th className="p-4 font-semibold">Category Name</th>
                 <th className="p-4 font-semibold">Description</th>
                 <th className="p-4 font-semibold text-center">Status</th>
@@ -222,7 +238,7 @@ function CategoryPage() {
             <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="p-12 text-center text-slate-400 font-medium">
+                  <td colSpan="4" className="p-12 text-center text-slate-400 font-medium">
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 size={20} className="animate-spin text-blue-600" />
                       <span>Connecting to the server...</span>
@@ -232,9 +248,6 @@ function CategoryPage() {
               ) : categories.length > 0 ? (
                 categories.map((cat) => (
                   <tr key={cat.id} className="hover:bg-slate-50/50 transition-all">
-                    {/* <td className="p-4 pl-6 font-mono text-xs text-slate-400 max-w-[120px] truncate" title={cat.id}>
-                      {cat.id}
-                    </td> */}
                     <td className="p-4 font-bold text-slate-800">{cat.name}</td>
                     <td className="p-4 text-slate-500 max-w-xs truncate">{cat.description || '-'}</td>
                     <td className="p-4 text-center">
@@ -264,7 +277,7 @@ function CategoryPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="p-8 text-center text-slate-400 font-semibold">
+                  <td colSpan="4" className="p-8 text-center text-slate-400 font-semibold">
                     No category data found in the backend.
                   </td>
                 </tr>
